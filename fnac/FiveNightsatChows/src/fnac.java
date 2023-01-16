@@ -8,7 +8,9 @@ import java.awt.image.BufferedImage;
 import javax.sound.sampled.*;
 import java.awt.Component;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
+import java.io.*;
 
 public class fnac extends JPanel implements KeyListener, MouseListener, Runnable{
 	//frame counter
@@ -19,14 +21,19 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int music = 1;
 	public static int volume = 1;
 	public static int difficulty = 1;
+	public static int userState = 0;
 	
 	//music stuff
 	public static Clip song;
-	public static Clip sound;
+		public static Clip sound;
 	
 	//title screen
 	public static int gameState = 0;
 	public static int settings = 0;
+	public static int about = 0;
+	public static int instructions = 0;
+	public static BufferedImage aboutPage;
+	public static BufferedImage backStory;
 	public static BufferedImage titleScreen;
 	public static BufferedImage titleScreen2;
 	public static BufferedImage settingsM1D1;
@@ -48,14 +55,19 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean south = false;
 	
 	//game state 2 (unfinished)
+	public static int score = 0;
 	public static BufferedImage office;
-	//test
-	public static BufferedImage testdoor;
-	public static BufferedImage testlight;
 	// moveRoom() method
 	public static int inRoom = 1;
 	public static Boolean doorClosed;
 	//office
+	public static BufferedImage leftVent;
+	public static BufferedImage rightVent;
+	public static BufferedImage leftLight;
+	public static BufferedImage rightLight;
+	public static BufferedImage leftDoor;
+	public static BufferedImage rightDoor;
+
 	public static boolean lightLeft = false;
 	public static boolean lightRight = false;
 	public static boolean doorLeft = false;
@@ -98,6 +110,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//game state 3 (unfinished)
 	public static BufferedImage winMenu;
 	public static BufferedImage loseMenu;
+	public static boolean winOrLoss;
 	
 	// just here so we can determine where to set our buttons
 	public static int mousePosX = 0; 
@@ -185,13 +198,21 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	//user saves method (unfinished)
-	public static void userSaves() { 
-		try {
-			PrintWriter userOut = new PrintWriter(new FileWriter("save.txt"));
-			
-			userOut.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public static void userSaves() throws FileNotFoundException, IOException { 
+		if (gameState == 0) {
+			Scanner fileInput = new Scanner(new File("saves.txt")); 
+			userState = fileInput.nextInt();
+			gameTime = fileInput.nextInt();
+			score = fileInput.nextInt();
+			batPos = fileInput.nextInt();
+			eChowPos = fileInput.nextInt();
+			cHSPos = fileInput.nextInt();
+			karelPos = fileInput.nextInt();
+		}
+		if (gameState == 2) {
+			PrintWriter fileOutput = new PrintWriter(new FileWriter("saves.txt"));
+			fileOutput.printf("%d%f%d%f%d%f%d%f%d%f%d%f%d%f", userState, gameTime, score, batPos, eChowPos, cHSPos, karelPos);
+			fileOutput.close();
 		}
 	}
 	
@@ -349,8 +370,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					g.drawImage(titleScreen2,0,0,null);
 				}
 			}
+			if (instructions == 1) {
+				g.drawImage(aboutPage,0,0,null);
+			}
+			if (about == 1) {
+				g.drawImage(backStory,0,0,null);
+			}
 		}
 		if (gameState == 1){
+			if (userState == 1) {
+				gameState = 2;
+			}
 			updatePurple();
 			g.drawImage(bg,0,0,null);
 			g.drawImage(purpleSprite[purpleState], purpleX, purpleY, null);
@@ -375,15 +405,33 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			// draw office
 			if (map == 0) {
 				g.drawImage(office,0,0,null);
-				//draw map and cams
 				if(doorLeft)
 				{
-					g.drawImage(testdoor,3,0,null);
+					g.drawImage(leftDoor,0,0,null);
 				}	
+				if(doorRight) {
+					g.drawImage(rightDoor,0,0,null);
+				}
+				
+				// light
 				if(lightLeft)
 				{
-					g.drawImage(testlight,300,0,null);
+					g.drawImage(leftLight,0,0,null);
 				}
+				if(lightRight)
+				{
+					g.drawImage(rightLight,0,0,null);
+				}
+				//vent
+				if(ventLeft)
+				{
+					g.drawImage(leftVent,0,0,null);
+				}
+				if(ventRight)
+				{
+					g.drawImage(rightVent,0,0,null);
+				}
+				//draw map and cams
 			}else{
 				if (cam == 0) {
 					g.drawImage(nav,0,0,null);
@@ -433,7 +481,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		}
 	}
 	
-	public static void main(String [] args){
+	public static void main(String [] args) throws FileNotFoundException{ 
 		try {
 			titleScreen = ImageIO.read(new File("titleScreen.png"));
 			titleScreen2 = ImageIO.read(new File("titleScreen2.png"));
@@ -456,8 +504,15 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			cameraBorder = ImageIO.read(new File("cameraBorder.png"));
 			cam7a = ImageIO.read(new File("7a.png"));
 			cam7b = ImageIO.read(new File("7b.png"));
-			testdoor = ImageIO.read(new File("download.jpg"));
-			testlight = ImageIO.read(new File("lighttest.jpg"));
+			leftVent = ImageIO.read(new File("leftVent.png"));
+			rightVent = ImageIO.read(new File("rightVent.png"));
+			leftLight = ImageIO.read(new File("leftLight.png"));
+			rightLight = ImageIO.read(new File("rightLight.png"));
+			rightDoor = ImageIO.read(new File("doorRight.png"));
+			leftDoor = ImageIO.read(new File("doorLeft.png"));
+			backStory = ImageIO.read(new File("backStory.png"));
+			aboutPage = ImageIO.read(new File("howToPlay.png"));
+
 		}
 		catch (Exception e) {
 			System.out.println("image import error");
@@ -540,11 +595,19 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (gameState == 2) {
+			userState = 1;
 			// resets position
 			purpleX = 1218;
 			purpleY = 460;
-			if (e.getKeyChar() == ' ') {
-				gameState = 3;
+			if (map == 0 && cam == 0) {
+				if (e.getKeyChar() == ' ') {
+					map = 1;
+				}
+			}
+			else {
+				if (cam == 0) {
+					map = 0;
+				}
 			}
 		}
 		if (gameState == 3) {
@@ -572,20 +635,23 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 	}
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e)  { 
 		mousePosX = e.getX();
 		mousePosY = e.getY();
 		// for convenience, wherever you click on the screen, it prints out the mouse position
 		System.out.printf("%d, %d%n", mousePosX, mousePosY);
 		
 		if (gameState == 0){
-			if (settings == 0){
+			if (settings == 0 && about == 0 && instructions == 0){
 				// enter game 
 				if (mousePosX > 126 && mousePosY > 436 && mousePosX < 299 && mousePosY < 495){
 					gameState = 1;
-					playMusic("scare.wav");
+					song.stop();
 				}
-				
+				//about page
+				if (mousePosX > 133 && mousePosY > 616 && mousePosX < 345 && mousePosY < 669){
+					about = 1;
+				}
 				// enter settings menu
 				if (mousePosX > 132 && mousePosX < 460 && mousePosY > 533 && mousePosY < 574){
 					settings = 1;
@@ -594,6 +660,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (mousePosX > 132 && mousePosY > 779 && mousePosX < 307 && mousePosY < 831){
 					System.exit(0);
 				}
+
+				
 			}else if (settings == 1){
 				// exit the settings menu
 				if (mousePosX > 516 && mousePosY > 275 && mousePosX < 633 && mousePosY < 684){
@@ -621,6 +689,22 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				//difficulty hard
 				if (mousePosX > 1049 && mousePosY > 513 && mousePosX < 1139 && mousePosY < 543){
 					difficulty = 2;
+				}
+			}
+			else if (about == 1) {
+				if (mousePosX > 691 && mousePosY > 770 && mousePosX < 1002 && mousePosY < 835){
+					about = 0;
+
+				}
+				if (mousePosX > 1407 && mousePosY > 444 && mousePosX < 1448 && mousePosY < 582){
+					instructions = 1;
+					about = 0;
+				}
+			}
+			else if (instructions == 1) {
+				if (mousePosX > 240 && mousePosY > 451 && mousePosX < 289 && mousePosY < 514){
+					about = 1;
+					instructions = 0;
 				}
 			}
 		}
@@ -710,41 +794,40 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 			else
 			{
-				if (mousePosX > 68 && mousePosY > 216 && mousePosX < 205 && mousePosY < 708) {
-					if(!doorLeft)
-					{
-						doorLeft = true;
-						System.out.print("door left");
-						
-					}
-					else
-					{
-						doorLeft = false;
-					}
-				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				//door
+				if (mousePosX > 1500 && mousePosY > 55 && mousePosX < 1691 && mousePosY < 960) {
 					if(!doorRight)
 					{
 						doorRight = true;
-						
 					}
 					else
 					{
 						doorRight = false;
 					}
 				}
+				if (mousePosX > 0 && mousePosY > 80 && mousePosX < 175 && mousePosY < 952) {
+					if(!doorLeft)
+					{
+						doorLeft = true;
+					}
+					else
+					{
+						doorLeft = false;
+					}
+				}
+
+				// light
 				if (mousePosX > 267 && mousePosY > 200 && mousePosX < 388 && mousePosY < 639) {
 					if(!lightLeft)
 					{
 						lightLeft = true;
-						System.out.print("light left");
 					}
 					else
 					{
 						lightLeft = false;
 					}
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 1277 && mousePosY > 219 && mousePosX < 1398 && mousePosY < 683) {
 					if(!lightRight)
 					{
 						lightRight = true;
@@ -754,6 +837,30 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 						lightRight = false;
 					}
 				}
+
+				// vent
+				if (mousePosX > 1294 && mousePosY > 717 && mousePosX < 1430 && mousePosY < 941) {
+					if(!ventRight)
+					{
+						ventRight = true;
+					}
+					else
+					{
+						ventRight = false;
+					}
+				}
+
+				if (mousePosX > 192 && mousePosY > 757 && mousePosX < 335 && mousePosY < 908) {
+					if(!ventLeft)
+					{
+						ventLeft = true;
+					}
+					else
+					{
+						ventLeft = false;
+					}
+				}
+				
 			}
 		}
 	}
