@@ -174,6 +174,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			else if (inRoom == 13) {
 				if (doorLeft) {
 					inRoom = 1;
+					score += 2000;
 				}
 				else {
 					gameState = 3;
@@ -182,6 +183,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			else if (inRoom == 14) {
 				if (doorRight) {
 					inRoom = 1;
+					score += 2000;
 				}
 				else {
 					gameState = 3;
@@ -365,9 +367,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		if(map != 0)
 		{
-			powerUse++;	
+			powerUse++;
 		}
 		if(doorLeft)
+		{
+			powerUse++;
+		}
+		if(doorRight)
 		{
 			powerUse++;
 		}
@@ -375,10 +381,18 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		{
 			powerUse += 2;
 		}
+		if(lightRight)
+		{
+			powerUse += 2;
+		}
+		if(powerUse % 50 == 0) {
+			score -= 25;
+		}
 		if(powerUse > 500)
 		{
 			power--;
 			powerUse = 0;
+			score -= 10;
 		}
 		// paint component
 		super.paintComponent(g);
@@ -415,7 +429,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			//frame
 				gameTime++;
 				if (gameTime > d1Time && gameTime % d1Time == 0) {
-					minutes++;
+					score+= 500;
 				}
 				if (difficulty == 1 && gameTime % d1Time == 0) {
 					karelPos = moveRoom(karelPos);
