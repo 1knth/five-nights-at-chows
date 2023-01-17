@@ -83,17 +83,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int power = 100;
 	public static BufferedImage nav;
 	public static BufferedImage cameraBorder;
-	public static BufferedImage[] cam1a = new BufferedImage[3];
-	public static BufferedImage[] cam1b = new BufferedImage[3];
-	public static BufferedImage[] cam2 = new BufferedImage[3];
-	public static BufferedImage[] cam3 = new BufferedImage[3];
-	public static BufferedImage[] cam4 = new BufferedImage[3];
-	public static BufferedImage[] cam5 = new BufferedImage[3];
-	public static BufferedImage[] cam6 = new BufferedImage[3];
-	public static BufferedImage[] cam7a = new BufferedImage[3];
-	public static BufferedImage[] cam7b = new BufferedImage[3];
-	public static BufferedImage[] cam8a = new BufferedImage[3];
-	public static BufferedImage[] cam8b = new BufferedImage[3];
+	public static BufferedImage[] cam1a = new BufferedImage[4];
+	public static BufferedImage[] cam1b = new BufferedImage[4];
+	public static BufferedImage[] cam2 = new BufferedImage[4];
+	public static BufferedImage[] cam3 = new BufferedImage[4];
+	public static BufferedImage[] cam4 = new BufferedImage[4];
+	public static BufferedImage[] cam5 = new BufferedImage[4];
+	public static BufferedImage[] cam6 = new BufferedImage[4];
+	public static BufferedImage[] cam7a = new BufferedImage[4];
+	public static BufferedImage[] cam7b = new BufferedImage[4];
+	public static BufferedImage[] cam8a = new BufferedImage[4];
+	public static BufferedImage[] cam8b = new BufferedImage[4];
 	public static BufferedImage cam9;
 	public static BufferedImage cams[][] = {cam1a,cam1b,cam2,cam3,cam4,cam5,cam6,cam7a,cam7b,cam8a,cam8b};	
 	//characters
@@ -379,7 +379,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		{
 			power--;
 			powerUse = 0;
-			System.out.println(power);
 		}
 		// paint component
 		super.paintComponent(g);
@@ -759,25 +758,25 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 			if (map == 1) {
 				//go into cams
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 507 && mousePosY > 106 && mousePosX < 532 && mousePosY < 125) {
 					cam = 1;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 884 && mousePosY > 418 && mousePosX < 913 && mousePosY < 436) {
 					cam = 2;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 1186 && mousePosY > 328 && mousePosX < 1209 && mousePosY < 360) {
 					cam = 3;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 487 && mousePosY > 582 && mousePosX < 506 && mousePosY < 615) {
 					cam = 4;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 711 && mousePosY > 568 && mousePosX < 744 && mousePosY < 584) {
 					cam = 5;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 975 && mousePosY > 444 && mousePosX < 1005 && mousePosY < 462) {
 					cam = 6;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 542 && mousePosY > 818 && mousePosX < 578 && mousePosY < 840) {
 					cam = 7;
 				}
 				if (mousePosX > 769 && mousePosY > 627 && mousePosX < 782 && mousePosY < 642) {
@@ -786,10 +785,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (mousePosX > 742 && mousePosY > 802 && mousePosX < 752 && mousePosY < 819) {
 					cam = 9;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 924 && mousePosY > 617 && mousePosX < 935 && mousePosY < 635) {
 					cam = 10;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 960 && mousePosY > 789 && mousePosX < 974 && mousePosY < 808) {
 					cam = 11;
 				}
 				if (mousePosX > 1005 && mousePosY > 604 && mousePosX < 1113 && mousePosY < 756) {
