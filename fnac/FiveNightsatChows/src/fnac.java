@@ -10,9 +10,10 @@ import java.awt.Component;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
-import java.io.*;
 
 public class fnac extends JPanel implements KeyListener, MouseListener, Runnable{
+	//misc 
+	public static int gameSettings;
 	//frame counter
 	public static int frameCounter = 0;
 	public static int minutes;
@@ -597,6 +598,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		if (gameState == 2) {
 			userState = 1;
 			// resets position
+			if (e.getKeyCode() == 27) {
+				gameSettings = 1;
+			}
 			purpleX = 1218;
 			purpleY = 460;
 			if (map == 0 && cam == 0) {
@@ -711,6 +715,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		// main game
 		if (gameState == 2) {
+			if (gameSettings == 1) {
+				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
+					gameSettings = 0;
+				}
+			}
 			if (cam == 0 && map == 1) {
 				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
 					map = 0;
@@ -719,6 +728,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			//exit cams
 			if (cam > 0) {
 				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
+					//stops audio room music
 					if(cam == 12)
 					{
 						sound.stop();
