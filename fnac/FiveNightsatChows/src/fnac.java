@@ -59,7 +59,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int score = 0;
 	public static BufferedImage office;
 	// moveRoom() method
-	public static int inRoom = 1;
 	public static Boolean doorClosed;
 	//office
 	public static BufferedImage leftVent;
@@ -82,22 +81,22 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
-	public static int power = 1000;
+	public static int power = 100;
 	public static BufferedImage nav;
 	public static BufferedImage cameraBorder;
-	public static BufferedImage cam1a;
-	public static BufferedImage cam1b;
-	public static BufferedImage cam2;
-	public static BufferedImage cam3;
-	public static BufferedImage cam4;
-	public static BufferedImage cam5;
-	public static BufferedImage cam6;
-	public static BufferedImage cam7a;
-	public static BufferedImage cam7b;
-	public static BufferedImage cam8a;
-	public static BufferedImage cam8b;
+	public static BufferedImage[] cam1a = new BufferedImage[3];
+	public static BufferedImage[] cam1b = new BufferedImage[3];
+	public static BufferedImage[] cam2 = new BufferedImage[3];
+	public static BufferedImage[] cam3 = new BufferedImage[3];
+	public static BufferedImage[] cam4 = new BufferedImage[3];
+	public static BufferedImage[] cam5 = new BufferedImage[3];
+	public static BufferedImage[] cam6 = new BufferedImage[3];
+	public static BufferedImage[] cam7a = new BufferedImage[3];
+	public static BufferedImage[] cam7b = new BufferedImage[3];
+	public static BufferedImage[] cam8a = new BufferedImage[3];
+	public static BufferedImage[] cam8b = new BufferedImage[3];
 	public static BufferedImage cam9;
-	
+	public static BufferedImage cams[][] = {cam1a,cam1b,cam2,cam3,cam4,cam5,cam6,cam7a,cam7b,cam8a,cam8b};	
 	//characters
 	public static BufferedImage evilChow;
 	public static BufferedImage codeHS;
@@ -128,13 +127,24 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	//character move room (unfinished)
-	public static int moveRoom() {
+	public static int moveRoom(int inRoom) {
+		int temp = inRoom;
 		Random generator = new Random();
 		if (gameTime % 2700 == 0 && gameTime < 5400) {
 			inRoom = ThreadLocalRandom.current().nextInt(1, 6);
 		}
 		if (gameTime > 2700 && gameTime % 2700 == 0) {
-			if (inRoom == 3) {
+			if(inRoom == 1) {
+				int[] rooms = {2,3,4,5};
+				int randomIndex = generator.nextInt(rooms.length);
+				inRoom = rooms[randomIndex];
+			}
+			else if(inRoom == 2) {
+				int[] rooms = {3,4,5};
+				int randomIndex = generator.nextInt(rooms.length);
+				inRoom = rooms[randomIndex];
+			}
+			else if (inRoom == 3) {
 				inRoom = 6;
 			}
 			else if (inRoom == 4) {
@@ -168,7 +178,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (eChowPos == inRoom || cHSPos == inRoom || karelPos == inRoom || batPos == inRoom) {
-			moveRoom();
+			moveRoom(inRoom);
 		}
 		return inRoom;
 	}
@@ -397,10 +407,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					minutes++;
 				}
 				if (difficulty == 1 && gameTime % 2700 == 0) {
-					moveRoom();
+					karelPos = moveRoom(karelPos);
+					eChowPos = moveRoom(eChowPos);
+					batPos = moveRoom(batPos);
+					System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
 				}
 				if (difficulty == 2 && gameTime % 1350 == 0) {
-					moveRoom();
+					//
 				}
 			
 			// draw office
@@ -437,44 +450,36 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (cam == 0) {
 					g.drawImage(nav,0,0,null);
 				}
-				if (cam == 1) {
-					g.drawImage(cam1a,0,0,null);
-				}
-				if (cam == 2) {
-					g.drawImage(cam1b,0,0,null);
-				}
-				if (cam == 3) {
-					g.drawImage(cam2,0,0,null);
-				}
-				if (cam == 4) {
-					g.drawImage(cam3,0,0,null);
-				}
-				if (cam == 5) {
-					g.drawImage(cam4,0,0,null);
-				}
-				if (cam == 6) {
-					g.drawImage(cam5,0,0,null);
-				}
-				if (cam == 7) {
-					g.drawImage(cam6,0,0,null);
-				}
-				if (cam == 8) {
-					g.drawImage(cam7a,0,0,null);
-				}
-				if (cam == 9) {
-					g.drawImage(cam7b,0,0,null);
-				}
-				if (cam == 10) {
-					g.drawImage(cam8a,0,0,null);
-				}
-				if (cam == 11) {
-					g.drawImage(cam8b,0,0,null);
-				}
-				if (cam == 12) {
+				else if (cam == 12) {
 					g.drawImage(cam9,0,0,null);
 				}
+				else
+				{
+					for(int i = 0; i < cams.length; i++)
+					{
+						if(cam == i+1)
+						{
+							if(eChowPos == i)
+							{
+								g.drawImage(cams[i][1],0,0,null);
+							}
+							else if(karelPos == i)
+							{
+								g.drawImage(cams[i][2],0,0,null);
+							}
+							else if(batPos == i)
+							{
+								g.drawImage(cams[i][3],0,0,null);
+							}
+							else
+							{
+								g.drawImage(cams[i][0],0,0,null);
+							
+							}
+						}
+					}
+				}
 			}
-			
 		}
 		if (gameState == 3) {
 			g.drawString("game state 3: win/loss screen", 300, 250);
@@ -503,8 +508,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			office = ImageIO.read(new File("officeEmpty.png"));
 			nav = ImageIO.read(new File("map.png"));
 			cameraBorder = ImageIO.read(new File("cameraBorder.png"));
-			cam7a = ImageIO.read(new File("7a.png"));
-			cam7b = ImageIO.read(new File("7b.png"));
+			cam7a[0] = ImageIO.read(new File("7a.png"));
+			cam7b[0] = ImageIO.read(new File("7b.png"));
 			leftVent = ImageIO.read(new File("leftVent.png"));
 			rightVent = ImageIO.read(new File("rightVent.png"));
 			leftLight = ImageIO.read(new File("leftLight.png"));
@@ -781,7 +786,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					{
 						try
 						{
-							File musicPath = new File("HSAmbient.wav");
+							File musicPath = new File("ambient.wav");
 							if(musicPath.exists())
 							{
 								AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
