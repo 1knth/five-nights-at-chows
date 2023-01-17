@@ -26,7 +26,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	
 	//music stuff
 	public static Clip song;
-		public static Clip sound;
+	public static Clip sound;
 	
 	//title screen
 	public static int gameState = 0;
@@ -77,7 +77,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean lightVLeft = false;
 	public static boolean lightVRight = false;
 	public static int powerUse = 0;
-	
+	//change this variable to change the speed of the monsters moving at difficulty 1
+	public static int d1Time = 1000;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
@@ -130,10 +131,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int moveRoom(int inRoom) {
 		int temp = inRoom;
 		Random generator = new Random();
-		if (gameTime % 2700 == 0 && gameTime < 5400) {
+		if (gameTime % d1Time == 0 && gameTime < d1Time*2) {
 			inRoom = ThreadLocalRandom.current().nextInt(1, 6);
 		}
-		if (gameTime > 2700 && gameTime % 2700 == 0) {
+		if (gameTime > d1Time && gameTime % d1Time == 0) {
 			if(inRoom == 1) {
 				int[] rooms = {2,3,4,5};
 				int randomIndex = generator.nextInt(rooms.length);
@@ -178,7 +179,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (eChowPos == inRoom || cHSPos == inRoom || karelPos == inRoom || batPos == inRoom) {
-			moveRoom(inRoom);
+			//monsters cannot move if someone is in the room they want to go to
+			return temp;
 		}
 		return inRoom;
 	}
@@ -403,10 +405,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		if (gameState == 2){
 			//frame
 				gameTime++;
-				if (gameTime > 2700 && gameTime % 2700 == 0) {
+				if (gameTime > d1Time && gameTime % d1Time == 0) {
 					minutes++;
 				}
-				if (difficulty == 1 && gameTime % 2700 == 0) {
+				if (difficulty == 1 && gameTime % d1Time == 0) {
 					karelPos = moveRoom(karelPos);
 					eChowPos = moveRoom(eChowPos);
 					batPos = moveRoom(batPos);
