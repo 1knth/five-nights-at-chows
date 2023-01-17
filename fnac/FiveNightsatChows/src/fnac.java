@@ -58,8 +58,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//game state 2 (unfinished)
 	public static int score = 0;
 	public static BufferedImage office;
-	// moveRoom() method
-	public static Boolean doorClosed;
 	//office
 	public static BufferedImage leftVent;
 	public static BufferedImage rightVent;
@@ -166,11 +164,23 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				int randomIndex = generator.nextInt(rooms.length);
 				inRoom = rooms[randomIndex];
 			}
-			else if (inRoom == 8 || inRoom == 9 || inRoom == 10 || inRoom == 11) {
+			else if (inRoom == 8 || inRoom == 9) {
 				inRoom = 13;
 			}
+			else if (inRoom == 10 || inRoom == 11) {
+				inRoom = 14;
+			}
+			
 			else if (inRoom == 13) {
-				if (doorClosed) {
+				if (doorLeft) {
+					inRoom = 1;
+				}
+				else {
+					gameState = 3;
+				}
+			}
+			else if (inRoom == 14) {
+				if (doorRight) {
 					inRoom = 1;
 				}
 				else {
@@ -788,12 +798,12 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					{
 						try
 						{
-							File musicPath = new File("ambient.wav");
-							if(musicPath.exists())
+							File musicPath2 = new File("ambientHS.wav");
+							if(musicPath2.exists())
 							{
-								AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+								AudioInputStream audioInput2 = AudioSystem.getAudioInputStream(musicPath2);
 								sound = AudioSystem.getClip();
-								sound.open(audioInput);
+								sound.open(audioInput2);
 								sound.start();
 								sound.loop(Clip.LOOP_CONTINUOUSLY);
 							}
