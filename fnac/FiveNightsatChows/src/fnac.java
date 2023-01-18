@@ -25,7 +25,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	
 	//music stuff
 	public static Clip song;
-		public static Clip sound;
+	public static Clip sound;
 	
 	//title screen
 	public static int gameState = 0;
@@ -57,9 +57,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//game state 2 (unfinished)
 	public static int score = 0;
 	public static BufferedImage office;
-	// moveRoom() method
-	public static int inRoom = 1;
-	public static Boolean doorClosed;
 	//office
 	public static BufferedImage leftVent;
 	public static BufferedImage rightVent;
@@ -77,26 +74,27 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean lightVLeft = false;
 	public static boolean lightVRight = false;
 	public static int powerUse = 0;
-	
+	//change this variable to change the speed of the monsters moving at difficulty 1
+	public static int d1Time = 1000;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
-	public static int power = 1000;
+	public static int power = 100;
 	public static BufferedImage nav;
 	public static BufferedImage cameraBorder;
-	public static BufferedImage cam1a;
-	public static BufferedImage cam1b;
-	public static BufferedImage cam2;
-	public static BufferedImage cam3;
-	public static BufferedImage cam4;
-	public static BufferedImage cam5;
-	public static BufferedImage cam6;
-	public static BufferedImage cam7a;
-	public static BufferedImage cam7b;
-	public static BufferedImage cam8a;
-	public static BufferedImage cam8b;
+	public static BufferedImage[] cam1a = new BufferedImage[4];
+	public static BufferedImage[] cam1b = new BufferedImage[4];
+	public static BufferedImage[] cam2 = new BufferedImage[4];
+	public static BufferedImage[] cam3 = new BufferedImage[4];
+	public static BufferedImage[] cam4 = new BufferedImage[4];
+	public static BufferedImage[] cam5 = new BufferedImage[4];
+	public static BufferedImage[] cam6 = new BufferedImage[4];
+	public static BufferedImage[] cam7a = new BufferedImage[4];
+	public static BufferedImage[] cam7b = new BufferedImage[4];
+	public static BufferedImage[] cam8a = new BufferedImage[4];
+	public static BufferedImage[] cam8b = new BufferedImage[4];
 	public static BufferedImage cam9;
-	
+	public static BufferedImage cams[][] = {cam1a,cam1b,cam2,cam3,cam4,cam5,cam6,cam7a,cam7b,cam8a,cam8b};	
 	//characters
 	public static BufferedImage evilChow;
 	public static BufferedImage codeHS;
@@ -127,13 +125,24 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	//character move room (unfinished)
-	public static int moveRoom() {
+	public static int moveRoom(int inRoom) {
+		int temp = inRoom;
 		Random generator = new Random();
-		if (gameTime % 2700 == 0 && gameTime < 5400) {
+		if (gameTime % d1Time == 0 && gameTime < d1Time*2) {
 			inRoom = ThreadLocalRandom.current().nextInt(1, 6);
 		}
-		if (gameTime > 2700 && gameTime % 2700 == 0) {
-			if (inRoom == 3) {
+		if (gameTime > d1Time && gameTime % d1Time == 0) {
+			if(inRoom == 1) {
+				int[] rooms = {2,3,4,5};
+				int randomIndex = generator.nextInt(rooms.length);
+				inRoom = rooms[randomIndex];
+			}
+			else if(inRoom == 2) {
+				int[] rooms = {3,4,5};
+				int randomIndex = generator.nextInt(rooms.length);
+				inRoom = rooms[randomIndex];
+			}
+			else if (inRoom == 3) {
 				inRoom = 6;
 			}
 			else if (inRoom == 4) {
@@ -154,12 +163,26 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				int randomIndex = generator.nextInt(rooms.length);
 				inRoom = rooms[randomIndex];
 			}
-			else if (inRoom == 8 || inRoom == 9 || inRoom == 10 || inRoom == 11) {
+			else if (inRoom == 8 || inRoom == 9) {
 				inRoom = 13;
 			}
+			else if (inRoom == 10 || inRoom == 11) {
+				inRoom = 14;
+			}
+			
 			else if (inRoom == 13) {
-				if (doorClosed) {
+				if (doorLeft) {
 					inRoom = 1;
+					score += 2000;
+				}
+				else {
+					gameState = 3;
+				}
+			}
+			else if (inRoom == 14) {
+				if (doorRight) {
+					inRoom = 1;
+					score += 2000;
 				}
 				else {
 					gameState = 3;
@@ -167,7 +190,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (eChowPos == inRoom || cHSPos == inRoom || karelPos == inRoom || batPos == inRoom) {
-			moveRoom();
+			//monsters cannot move if someone is in the room they want to go to
+			return temp;
 		}
 		return inRoom;
 	}
@@ -341,9 +365,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public void paintComponent(Graphics g) {
 		if(map != 0)
 		{
-			powerUse++;	
+			powerUse++;
 		}
 		if(doorLeft)
+		{
+			powerUse++;
+		}
+		if(doorRight)
 		{
 			powerUse++;
 		}
@@ -351,11 +379,18 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		{
 			powerUse += 2;
 		}
+		if(lightRight)
+		{
+			powerUse += 2;
+		}
+		if(powerUse % 50 == 0) {
+			score -= 25;
+		}
 		if(powerUse > 500)
 		{
 			power--;
 			powerUse = 0;
-			System.out.println(power);
+			score -= 10;
 		}
 		// paint component
 		super.paintComponent(g);
@@ -391,14 +426,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		if (gameState == 2){
 			//frame
 				gameTime++;
-				if (gameTime > 2700 && gameTime % 2700 == 0) {
-					minutes++;
+				if (gameTime > d1Time && gameTime % d1Time == 0) {
+					score+= 500;
 				}
-				if (difficulty == 1 && gameTime % 2700 == 0) {
-					moveRoom();
+				if (difficulty == 1 && gameTime % d1Time == 0) {
+					karelPos = moveRoom(karelPos);
+					eChowPos = moveRoom(eChowPos);
+					batPos = moveRoom(batPos);
+					System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
 				}
 				if (difficulty == 2 && gameTime % 1350 == 0) {
-					moveRoom();
+					//
 				}
 			
 			// draw office
@@ -435,44 +473,36 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (cam == 0) {
 					g.drawImage(nav,0,0,null);
 				}
-				if (cam == 1) {
-					g.drawImage(cam1a,0,0,null);
-				}
-				if (cam == 2) {
-					g.drawImage(cam1b,0,0,null);
-				}
-				if (cam == 3) {
-					g.drawImage(cam2,0,0,null);
-				}
-				if (cam == 4) {
-					g.drawImage(cam3,0,0,null);
-				}
-				if (cam == 5) {
-					g.drawImage(cam4,0,0,null);
-				}
-				if (cam == 6) {
-					g.drawImage(cam5,0,0,null);
-				}
-				if (cam == 7) {
-					g.drawImage(cam6,0,0,null);
-				}
-				if (cam == 8) {
-					g.drawImage(cam7a,0,0,null);
-				}
-				if (cam == 9) {
-					g.drawImage(cam7b,0,0,null);
-				}
-				if (cam == 10) {
-					g.drawImage(cam8a,0,0,null);
-				}
-				if (cam == 11) {
-					g.drawImage(cam8b,0,0,null);
-				}
-				if (cam == 12) {
+				else if (cam == 12) {
 					g.drawImage(cam9,0,0,null);
 				}
+				else
+				{
+					for(int i = 0; i < cams.length; i++)
+					{
+						if(cam == i+1)
+						{
+							if(eChowPos == i)
+							{
+								g.drawImage(cams[i][1],0,0,null);
+							}
+							else if(karelPos == i)
+							{
+								g.drawImage(cams[i][2],0,0,null);
+							}
+							else if(batPos == i)
+							{
+								g.drawImage(cams[i][3],0,0,null);
+							}
+							else
+							{
+								g.drawImage(cams[i][0],0,0,null);
+							
+							}
+						}
+					}
+				}
 			}
-			
 		}
 		if (gameState == 3) {
 			g.drawString("game state 3: win/loss screen", 300, 250);
@@ -501,8 +531,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			office = ImageIO.read(new File("officeEmpty.png"));
 			nav = ImageIO.read(new File("map.png"));
 			cameraBorder = ImageIO.read(new File("cameraBorder.png"));
-			cam7a = ImageIO.read(new File("7a.png"));
-			cam7b = ImageIO.read(new File("7b.png"));
+			cam7a[0] = ImageIO.read(new File("7a.png"));
+			cam7b[0] = ImageIO.read(new File("7b.png"));
 			leftVent = ImageIO.read(new File("leftVent.png"));
 			rightVent = ImageIO.read(new File("rightVent.png"));
 			leftLight = ImageIO.read(new File("leftLight.png"));
@@ -740,25 +770,25 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 			if (map == 1) {
 				//go into cams
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 507 && mousePosY > 106 && mousePosX < 532 && mousePosY < 125) {
 					cam = 1;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 884 && mousePosY > 418 && mousePosX < 913 && mousePosY < 436) {
 					cam = 2;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 1186 && mousePosY > 328 && mousePosX < 1209 && mousePosY < 360) {
 					cam = 3;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 487 && mousePosY > 582 && mousePosX < 506 && mousePosY < 615) {
 					cam = 4;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 711 && mousePosY > 568 && mousePosX < 744 && mousePosY < 584) {
 					cam = 5;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 975 && mousePosY > 444 && mousePosX < 1005 && mousePosY < 462) {
 					cam = 6;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 542 && mousePosY > 818 && mousePosX < 578 && mousePosY < 840) {
 					cam = 7;
 				}
 				if (mousePosX > 769 && mousePosY > 627 && mousePosX < 782 && mousePosY < 642) {
@@ -767,10 +797,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (mousePosX > 742 && mousePosY > 802 && mousePosX < 752 && mousePosY < 819) {
 					cam = 9;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 924 && mousePosY > 617 && mousePosX < 935 && mousePosY < 635) {
 					cam = 10;
 				}
-				if (mousePosX > 111 && mousePosY > 111 && mousePosX < 111 && mousePosY < 111) {
+				if (mousePosX > 960 && mousePosY > 789 && mousePosX < 974 && mousePosY < 808) {
 					cam = 11;
 				}
 				if (mousePosX > 1005 && mousePosY > 604 && mousePosX < 1113 && mousePosY < 756) {
@@ -779,12 +809,12 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					{
 						try
 						{
-							File musicPath = new File("HSAmbient.wav");
-							if(musicPath.exists())
+							File musicPath2 = new File("ambientHS.wav");
+							if(musicPath2.exists())
 							{
-								AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+								AudioInputStream audioInput2 = AudioSystem.getAudioInputStream(musicPath2);
 								sound = AudioSystem.getClip();
-								sound.open(audioInput);
+								sound.open(audioInput2);
 								sound.start();
 								sound.loop(Clip.LOOP_CONTINUOUSLY);
 							}
