@@ -22,7 +22,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int music = 1;
 	public static int volume = 1;
 	public static int difficulty = 1;
-	public static int night = 1;
+	public static int night = 3;
 	public static int userState = 0;
 	
 	//music stuff
@@ -396,23 +396,23 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		if(map != 0)
 		{
-			powerUse++;
+			powerUse += 2;
 		}
 		if(doorLeft)
 		{
-			powerUse++;
+			powerUse += 3;
 		}
 		if(doorRight)
 		{
-			powerUse++;
+			powerUse += 3;
 		}
 		if(lightLeft)
 		{
-			powerUse += 2;
+			powerUse += 5;
 		}
 		if(lightRight)
 		{
-			powerUse += 2;
+			powerUse += 5;
 		}
 		if(powerUse % 50 == 0) {
 			score -= 25;
@@ -463,13 +463,60 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (night == 1)
 				{
 					if (difficulty == 1 && gameTime % d1Time == 0) {
+						eChowPos = moveRoom(eChowPos);
+					}
+					if (difficulty == 2 && gameTime % (d1Time/2) == 0) {
+						eChowPos = moveRoom(eChowPos);
+					}
+				}
+				if (night == 2)
+				{
+					if (difficulty == 1 && gameTime % d1Time == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+					}
+					if (difficulty == 2 && gameTime % (d1Time/2) == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+					}
+				}
+				if (night == 3)
+				{
+					if (difficulty == 1 && gameTime % d1Time == 0) {
 						karelPos = moveRoom(karelPos);
 						eChowPos = moveRoom(eChowPos);
 						batPos = moveRoom(batPos);
-						System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
 					}
-					if (difficulty == 2 && gameTime % 1350 == 0) {
-						//
+					if (difficulty == 2 && gameTime % (d1Time/2) == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
+					}
+				}
+				if (night == 4)
+				{
+					if (difficulty == 1 && gameTime % (d1Time*0.75) == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
+					}
+					if (difficulty == 2 && gameTime % (d1Time*0.75/2) == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
+					}
+				}
+				if (night == 5)
+				{
+					if (difficulty == 1 && gameTime % d1Time*0.5 == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
+					}
+					if (difficulty == 2 && gameTime % (d1Time*0.5/2) == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
 					}
 				}
 			
@@ -620,7 +667,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		myFrame.setResizable(false);
 		
 		//play the start menu music, which stops when gamestate becomes 1
-		try
+		try 
 		{
 			File musicPath = new File("menu.wav");
 			if(musicPath.exists())
