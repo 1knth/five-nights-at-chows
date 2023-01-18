@@ -16,7 +16,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int gameSettings;
 	//frame counter
 	public static int frameCounter = 0;
-	public static int minutes;
+	public static int hour;
 	public static int gameTime;
 	// user saves (not entirely finished)
 	public static int music = 1;
@@ -59,6 +59,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//game state 2 (unfinished)
 	public static int score = 0;
 	public static int winLoss = 0;
+	public static int maxNight = 1;
 	//office
 	public static BufferedImage office;
 	public static BufferedImage leftVent;
@@ -82,7 +83,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int powerUse = 0;
 	public static int lightAccMax = 5;
 	//change this variable to change the speed of the monsters moving at difficulty 1
-	public static int d1Time = 300;
+	public static int d1Time = 675;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
@@ -513,6 +514,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (gameTime > d1Time && gameTime % d1Time == 0) {
 					score+= 500;
 				}
+				if (gameTime % 2700 == 0) {
+					hour++;
+				}
 				if (night == 1)
 				{
 					if (difficulty == 1 && gameTime % d1Time == 0) {
@@ -689,6 +693,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					playMusic("scare.wav");
 					karelLoss = false;
 					g.drawImage(karelScare,0,0,null);
+				}
+			}
+			else
+			{
+				if (night + 1 > maxNight)
+				{
+					maxNight = night+1;	
 				}
 			}
 			try {
