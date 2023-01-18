@@ -10,7 +10,7 @@ import java.awt.Component;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
-
+import java.util.concurrent.TimeUnit;
 public class fnac extends JPanel implements KeyListener, MouseListener, Runnable{
 	//misc 
 	public static int gameSettings;
@@ -59,8 +59,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	
 	//game state 2 (unfinished)
 	public static int score = 0;
-	public static BufferedImage office;
+	public static int winLoss = 0;
 	//office
+	public static BufferedImage office;
 	public static BufferedImage leftVent;
 	public static BufferedImage rightVent;
 	public static BufferedImage leftLight;
@@ -76,9 +77,12 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean ventRight = false;
 	public static boolean lightVLeft = false;
 	public static boolean lightVRight = false;
+	public static boolean chowLoss = true;
+	public static boolean karelLoss = true;
+	public static boolean batLoss = true;
 	public static int powerUse = 0;
 	//change this variable to change the speed of the monsters moving at difficulty 1
-	public static int d1Time = 700;
+	public static int d1Time = 50;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
@@ -103,6 +107,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage codeHS;
 	public static BufferedImage karel;
 	public static BufferedImage codingBat;
+	public static BufferedImage chowScare;
+	public static BufferedImage karelScare;
+	public static BufferedImage batScare;
 	public static int batPos = 2;
 	public static int cHSPos = 11;
 	public static int eChowPos = 1;
@@ -181,15 +188,15 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				else {
 					if(inRoom == eChowPos)
 					{
-						jumpScare("chow");
+						chowLoss = true;
 					}
 					else if(inRoom == batPos)
 					{
-						jumpScare("bat");
+						batLoss = true;
 					}
 					else if(inRoom == karelPos)
 					{
-						jumpScare("karel");
+						karelLoss = true;
 					}
 					gameState = 3;
 				}
@@ -212,21 +219,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	// music control method
-	public static void jumpScare(String monster)
-	{
-		if (monster.equals("chow"))
-		{
-			
-		}
-		if (monster.equals("bat"))
-		{
-			
-		}
-		if (monster.equals("karel"))
-		{
-			
-		}
-	}
 	public void playMusic(String musicLocation)
 	{
 		
@@ -609,7 +601,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 							else
 							{
 								g.drawImage(cams[i][0],0,0,null);
-							
 							}
 						}
 					}
@@ -617,6 +608,32 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (gameState == 3) {
+			if(winLoss == 0)
+			{
+				if (chowLoss)
+				{
+					playMusic("scare.wav");
+					chowLoss = false;
+					g.drawImage(chowScare,0,0,null);
+				}
+				if (batLoss)
+				{
+					playMusic("scare.wav");
+					batLoss = false;
+					g.drawImage(batScare,0,0,null);
+				}
+				if (karelLoss)
+				{
+					playMusic("scare.wav");
+					karelLoss = false;
+					g.drawImage(karelScare,0,0,null);
+				}
+			}
+			try {
+				TimeUnit.SECONDS.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			g.drawString("game state 3: win/loss screen", 300, 250);
 			g.drawString("press 'e' to go to back to menu/ game state 1", 300, 300);
 		}
