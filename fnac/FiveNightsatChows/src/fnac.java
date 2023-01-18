@@ -6,7 +6,6 @@ import java.io.*;
 import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import javax.sound.sampled.*;
-import java.awt.Component;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
@@ -340,7 +339,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	public void paintComponent(Graphics g) {
-		
 		if(map != 0)
 		{
 			powerUse++;	
