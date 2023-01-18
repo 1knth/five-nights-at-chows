@@ -89,6 +89,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int cam = 0;
 	public static int map = 0;
 	public static int power = 100;
+	public static int powerConstant = 1;
 	public static BufferedImage nav;
 	public static BufferedImage cameraBorder;
 	public static BufferedImage[] cam1a = new BufferedImage[4];
@@ -398,23 +399,23 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		if(map != 0)
 		{
-			powerUse += 2;
+			powerUse += powerConstant * 2;
 		}
 		if(doorLeft)
 		{
-			powerUse += 3;
+			powerUse += powerConstant * 3;
 		}
 		if(doorRight)
 		{
-			powerUse += 3;
+			powerUse += powerConstant * 3;
 		}
 		if(lightLeft)
 		{
-			powerUse += 5;
+			powerUse += powerConstant * 5;
 		}
 		if(lightRight)
 		{
-			powerUse += 5;
+			powerUse += powerConstant * 5;
 		}
 		if(powerUse % 50 == 0) {
 			score -= 25;
