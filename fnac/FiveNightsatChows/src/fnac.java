@@ -74,8 +74,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean doorRight = false;
 	public static boolean ventLeft = false;
 	public static boolean ventRight = false;
-	public static boolean lightVLeft = false;
-	public static boolean lightVRight = false;
 	public static int lightAccLeft = 0;
 	public static int lightAccRight = 0;
 	public static boolean chowLoss = true;
@@ -84,7 +82,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int powerUse = 0;
 	public static int lightAccMax = 5;
 	//change this variable to change the speed of the monsters moving at difficulty 1
-	public static int d1Time = 50;
+	public static int d1Time = 300;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
@@ -162,14 +160,22 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				inRoom = 7;
 			}
 			else if (inRoom == 5) {
-				int[] rooms = {5,8,9};
+				int[] rooms = {8,9,15};
 				int randomIndex = generator.nextInt(rooms.length);
 				inRoom = rooms[randomIndex];
+				if(inRoom == 15)
+				{
+					playMusic("breathLeft.wav");
+				}
 			}
 			else if (inRoom == 6) {
-				int[] rooms = {9,10,5};
+				int[] rooms = {9,10,5,16};
 				int randomIndex = generator.nextInt(rooms.length);
 				inRoom = rooms[randomIndex];
+				if(inRoom == 16)
+				{
+					playMusic("breathRight.wav");
+				}
 			}
 			else if (inRoom == 7) {
 				int[] rooms = {8,9};
@@ -221,6 +227,50 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					gameState = 3;
 				}
 			}
+			else if (inRoom == 15)
+			{
+				if (ventLeft) {
+					inRoom = 1;
+					score += 500;
+				}
+				else {
+					if(inRoom == eChowPos)
+					{
+						chowLoss = true;
+					}
+					else if(inRoom == batPos)
+					{
+						batLoss = true;
+					}
+					else if(inRoom == karelPos)
+					{
+						karelLoss = true;
+					}
+					gameState = 3;
+				}
+			}
+			else if (inRoom == 16)
+			{
+				if (ventRight) {
+					inRoom = 1;
+					score += 500;
+				}
+				else {
+					if(inRoom == eChowPos)
+					{
+						chowLoss = true;
+					}
+					else if(inRoom == batPos)
+					{
+						batLoss = true;
+					}
+					else if(inRoom == karelPos)
+					{
+						karelLoss = true;
+					}
+					gameState = 3;
+				}
+			}
 		}
 		if (eChowPos == inRoom || cHSPos == inRoom || karelPos == inRoom || batPos == inRoom) {
 			//monsters cannot move if someone is in the room they want to go to
@@ -230,7 +280,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	// music control method
-	public void playMusic(String musicLocation)
+	public static void playMusic(String musicLocation)
 	{
 		
 		try
