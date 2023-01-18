@@ -22,11 +22,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int music = 1;
 	public static int volume = 1;
 	public static int difficulty = 1;
+	public static int night = 1;
 	public static int userState = 0;
 	
 	//music stuff
 	public static Clip song;
 	public static Clip sound;
+	public static boolean ambientPlaying = false;
 	
 	//title screen
 	public static int gameState = 0;
@@ -76,7 +78,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean lightVRight = false;
 	public static int powerUse = 0;
 	//change this variable to change the speed of the monsters moving at difficulty 1
-	public static int d1Time = 1000;
+	public static int d1Time = 700;
 	//camera
 	public static int cam = 0;
 	public static int map = 0;
@@ -102,7 +104,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage karel;
 	public static BufferedImage codingBat;
 	public static int batPos = 2;
-	public static int cHSPos = 12;
+	public static int cHSPos = 11;
 	public static int eChowPos = 1;
 	public static int karelPos = 1;
 	
@@ -129,10 +131,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int moveRoom(int inRoom) {
 		int temp = inRoom;
 		Random generator = new Random();
-		if (gameTime % d1Time == 0 && gameTime < d1Time*2) {
+		if (gameTime < d1Time*2) {
 			inRoom = ThreadLocalRandom.current().nextInt(1, 6);
 		}
-		if (gameTime > d1Time && gameTime % d1Time == 0) {
+		if (gameTime > d1Time) {
 			if(inRoom == 1) {
 				int[] rooms = {2,3,4,5};
 				int randomIndex = generator.nextInt(rooms.length);
@@ -174,16 +176,28 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			else if (inRoom == 13) {
 				if (doorLeft) {
 					inRoom = 1;
-					score += 2000;
+					score += 1000;
 				}
 				else {
+					if(inRoom == eChowPos)
+					{
+						jumpScare("chow");
+					}
+					else if(inRoom == batPos)
+					{
+						jumpScare("bat");
+					}
+					else if(inRoom == karelPos)
+					{
+						jumpScare("karel");
+					}
 					gameState = 3;
 				}
 			}
 			else if (inRoom == 14) {
 				if (doorRight) {
 					inRoom = 1;
-					score += 2000;
+					score += 1000;
 				}
 				else {
 					gameState = 3;
@@ -198,6 +212,21 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	// music control method
+	public static void jumpScare(String monster)
+	{
+		if (monster.equals("chow"))
+		{
+			
+		}
+		if (monster.equals("bat"))
+		{
+			
+		}
+		if (monster.equals("karel"))
+		{
+			
+		}
+	}
 	public void playMusic(String musicLocation)
 	{
 		
@@ -431,14 +460,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				if (gameTime > d1Time && gameTime % d1Time == 0) {
 					score+= 500;
 				}
-				if (difficulty == 1 && gameTime % d1Time == 0) {
-					karelPos = moveRoom(karelPos);
-					eChowPos = moveRoom(eChowPos);
-					batPos = moveRoom(batPos);
-					System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
-				}
-				if (difficulty == 2 && gameTime % 1350 == 0) {
-					//
+				if (night == 1)
+				{
+					if (difficulty == 1 && gameTime % d1Time == 0) {
+						karelPos = moveRoom(karelPos);
+						eChowPos = moveRoom(eChowPos);
+						batPos = moveRoom(batPos);
+						System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
+					}
+					if (difficulty == 2 && gameTime % 1350 == 0) {
+						//
+					}
 				}
 			
 			// draw office
@@ -476,7 +508,38 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					g.drawImage(nav,0,0,null);
 				}
 				else if (cam == 12) {
-					g.drawImage(cam9,0,0,null);
+					if(cHSPos == 12)
+					{
+						try
+						{
+							File musicPath2 = new File("ambientHS.wav");
+							if(musicPath2.exists())
+							{
+								AudioInputStream audioInput2 = AudioSystem.getAudioInputStream(musicPath2);
+								sound = AudioSystem.getClip();
+								sound.open(audioInput2);
+								sound.start();
+								sound.loop(Clip.LOOP_CONTINUOUSLY);
+								ambientPlaying = true;
+							}
+							else
+							{
+								System.out.print("no file");
+							}
+						}
+						catch(Exception ex)
+						{
+							ex.printStackTrace();
+						}
+					}
+					else
+					{
+						if(ambientPlaying) {
+							ambientPlaying = false;
+							sound.stop();
+						}
+					}
+					g.drawImage(cam9,0,0,null);	
 				}
 				else
 				{
@@ -761,7 +824,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					//stops audio room music
 					if(cam == 12)
 					{
-						sound.stop();
+						if(ambientPlaying)
+						{
+							sound.stop();
+						}
 					}
 					cam = 0;
 				}
@@ -807,29 +873,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 				if (mousePosX > 1005 && mousePosY > 604 && mousePosX < 1113 && mousePosY < 756) {
 					cam = 12;
-					if(cHSPos == 12)
-					{
-						try
-						{
-							File musicPath2 = new File("ambientHS.wav");
-							if(musicPath2.exists())
-							{
-								AudioInputStream audioInput2 = AudioSystem.getAudioInputStream(musicPath2);
-								sound = AudioSystem.getClip();
-								sound.open(audioInput2);
-								sound.start();
-								sound.loop(Clip.LOOP_CONTINUOUSLY);
-							}
-							else
-							{
-								System.out.print("no file");
-							}
-						}
-						catch(Exception ex)
-						{
-							ex.printStackTrace();
-						}
-					}
 				}
 			}
 			else
