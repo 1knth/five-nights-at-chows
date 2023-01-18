@@ -77,6 +77,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean ventRight = false;
 	public static boolean lightVLeft = false;
 	public static boolean lightVRight = false;
+	public static int lightAccLeft = 0;
+	public static int lightAccRight = 0;
 	public static boolean chowLoss = true;
 	public static boolean karelLoss = true;
 	public static boolean batLoss = true;
@@ -174,16 +176,21 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				inRoom = rooms[randomIndex];
 			}
 			else if (inRoom == 8 || inRoom == 9) {
+				lightAccLeft = 0;
 				inRoom = 13;
 			}
 			else if (inRoom == 10 || inRoom == 11) {
+				lightAccRight = 0;
 				inRoom = 14;
 			}
 			
 			else if (inRoom == 13) {
 				if (doorLeft) {
-					inRoom = 1;
-					score += 1000;
+					if(lightAccLeft > 10)
+					{
+						inRoom = 1;
+						score += 1000;
+					}
 				}
 				else {
 					if(inRoom == eChowPos)
@@ -203,8 +210,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 			else if (inRoom == 14) {
 				if (doorRight) {
-					inRoom = 1;
-					score += 1000;
+					if(lightAccRight > 10)
+					{
+						inRoom = 1;
+						score += 1000;
+					}
 				}
 				else {
 					gameState = 3;
@@ -968,6 +978,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					if(!lightLeft)
 					{
 						lightLeft = true;
+						lightAccLeft += 1;
 					}
 					else
 					{
@@ -978,6 +989,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					if(!lightRight)
 					{
 						lightRight = true;
+						lightAccRight += 1;
 					}
 					else
 					{
