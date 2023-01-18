@@ -24,7 +24,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int difficulty = 1;
 	public static int night = 3;
 	public static int userState = 0;
-	
 	//music stuff
 	public static Clip song;
 	public static Clip sound;
@@ -83,6 +82,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static boolean karelLoss = true;
 	public static boolean batLoss = true;
 	public static int powerUse = 0;
+	public static int lightAccMax = 5;
 	//change this variable to change the speed of the monsters moving at difficulty 1
 	public static int d1Time = 50;
 	//camera
@@ -176,18 +176,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				inRoom = rooms[randomIndex];
 			}
 			else if (inRoom == 8 || inRoom == 9) {
-				lightAccLeft = 0;
 				inRoom = 13;
 			}
 			else if (inRoom == 10 || inRoom == 11) {
-				lightAccRight = 0;
 				inRoom = 14;
 			}
 			
 			else if (inRoom == 13) {
 				if (doorLeft) {
-					if(lightAccLeft > 10)
+					if(lightAccLeft >= lightAccMax)
 					{
+						lightAccLeft = 0;
 						inRoom = 1;
 						score += 1000;
 					}
@@ -210,8 +209,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 			else if (inRoom == 14) {
 				if (doorRight) {
-					if(lightAccRight > 10)
+					if(lightAccRight >= lightAccMax)
 					{
+						lightAccRight = 0;
 						inRoom = 1;
 						score += 1000;
 					}
@@ -488,6 +488,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 						karelPos = moveRoom(karelPos);
 						eChowPos = moveRoom(eChowPos);
 						batPos = moveRoom(batPos);
+						System.out.printf("%4d%4d%4d%n", karelPos,eChowPos,batPos);
 					}
 					if (difficulty == 2 && gameTime % (d1Time/2) == 0) {
 						karelPos = moveRoom(karelPos);
@@ -855,11 +856,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				//difficulty normal
 				if (mousePosX > 935 && mousePosY > 505 && mousePosX < 1049 && mousePosY < 550){
 					difficulty = 1;
+					lightAccMax = 5;
 				}
 				
 				//difficulty hard
 				if (mousePosX > 1049 && mousePosY > 513 && mousePosX < 1139 && mousePosY < 543){
 					difficulty = 2;
+					lightAccMax = 10;
 				}
 			}
 			else if (about == 1) {
@@ -978,7 +981,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					if(!lightLeft)
 					{
 						lightLeft = true;
-						lightAccLeft += 1;
+						if(eChowPos == 13 || batPos == 13 || karelPos == 13)
+						{
+							lightAccLeft += 1;	
+							System.out.print(lightAccLeft);
+						}
 					}
 					else
 					{
@@ -989,7 +996,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					if(!lightRight)
 					{
 						lightRight = true;
-						lightAccRight += 1;
+						if(eChowPos == 14 || batPos == 14 || karelPos == 14)
+						{
+							lightAccRight += 1;
+							System.out.print(lightAccRight);
+						}
 					}
 					else
 					{
