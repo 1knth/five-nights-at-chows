@@ -435,7 +435,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					karelPos = moveRoom(karelPos);
 					eChowPos = moveRoom(eChowPos);
 					batPos = moveRoom(batPos);
-					System.out.printf("%5d%5d%5d", karelPos,batPos,eChowPos);
+					System.out.printf("%5d%5d%5d%f", karelPos,batPos,eChowPos);
 				}
 				if (difficulty == 2 && gameTime % 1350 == 0) {
 					//
@@ -486,19 +486,19 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 						{
 							if(eChowPos == i)
 							{
-								g.drawImage(cams[i][1],0,0,null);
+								g.drawImage(cams[i+1][1],0,0,null);
 							}
 							else if(karelPos == i)
 							{
-								g.drawImage(cams[i][2],0,0,null);
+								g.drawImage(cams[i+1][2],0,0,null);
 							}
 							else if(batPos == i)
 							{
-								g.drawImage(cams[i][3],0,0,null);
+								g.drawImage(cams[i+1][3],0,0,null);
 							}
 							else
 							{
-								g.drawImage(cams[i][0],0,0,null);
+								g.drawImage(cams[i+1][0],0,0,null);
 							
 							}
 						}
