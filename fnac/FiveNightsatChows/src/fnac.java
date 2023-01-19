@@ -536,8 +536,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			office = ImageIO.read(new File("officeEmpty.png"));
 			nav = ImageIO.read(new File("map.png"));
 			cameraBorder = ImageIO.read(new File("cameraBorder.png"));
-			cam7a[0] = ImageIO.read(new File("7a.png"));
-			cam7b[0] = ImageIO.read(new File("7b.png"));
 			leftVent = ImageIO.read(new File("leftVent.png"));
 			rightVent = ImageIO.read(new File("rightVent.png"));
 			leftLight = ImageIO.read(new File("leftLight.png"));
@@ -546,8 +544,21 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			leftDoor = ImageIO.read(new File("doorLeft.png"));
 			backStory = ImageIO.read(new File("backStory.png"));
 			aboutPage = ImageIO.read(new File("howToPlay.png"));
+			cam1a[0] = ImageIO.read(new File("cam1a.png"));
+			cam1b[1] = ImageIO.read(new File("echow1a"));
+			cam1b[0] = ImageIO.read(new File("cam1b.png"));
+			cam1b[1] = ImageIO.read(new File("echow1b.png"));
+			cam2[0] = ImageIO.read(new File("cam2.png"));
+			cam2[1] = ImageIO.read(new File("echow2.png"));
+			cam3[0] = ImageIO.read(new File("cam3.png"));
+			cam3[1] = ImageIO.read(new File("echow3.png"));
+			cam7a[0] = ImageIO.read(new File("cam7a.png"));
+			cam7b[0] = ImageIO.read(new File("cam7b.png"));
+			cam7b[1] = ImageIO.read(new File("echow7b.png"));
+			cam7a[1] = ImageIO.read(new File("echow7a.png"));
 			cam6[0] = ImageIO.read(new File("cam6.png"));
 			cam6[1] = ImageIO.read(new File("echow6.png"));
+			cam9 = ImageIO.read(new File("audioroom.png"));
 			gameSettings = ImageIO.read(new File("gameSettings.png"));
 			
 
