@@ -484,21 +484,21 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					{
 						if(cam == i+1)
 						{
-							if(eChowPos == i)
+							if(eChowPos == i+1)
 							{
-								g.drawImage(cams[i+1][1],0,0,null);
+								g.drawImage(cams[i][1],0,0,null);
 							}
-							else if(karelPos == i)
+							else if(karelPos == i+1)
 							{
-								g.drawImage(cams[i+1][2],0,0,null);
+								g.drawImage(cams[i][2],0,0,null);
 							}
-							else if(batPos == i)
+							else if(batPos == i+1)
 							{
-								g.drawImage(cams[i+1][3],0,0,null);
+								g.drawImage(cams[i][3],0,0,null);
 							}
 							else
 							{
-								g.drawImage(cams[i+1][0],0,0,null);
+								g.drawImage(cams[i][0],0,0,null);
 							
 							}
 						}
