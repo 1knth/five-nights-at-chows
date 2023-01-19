@@ -629,15 +629,15 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 				if(lightRight)
 				{
-					if(eChowPos == 13)
+					if(eChowPos == 14)
 					{
 						g.drawImage(rightLEChow,0,0,null);
 					}
-					else if(batPos == 13)
+					else if(batPos == 14)
 					{
 						g.drawImage(rightLBat,0,0,null);
 					}
-					else if(karelPos == 13)
+					else if(karelPos == 14)
 					{
 						g.drawImage(rightLKarel,0,0,null);
 					}
