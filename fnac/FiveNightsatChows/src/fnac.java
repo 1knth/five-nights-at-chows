@@ -448,35 +448,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	
 	public void paintComponent(Graphics g) {
 		
-		if(map != 0)
-		{
-			powerUse += powerConstant * 2;
-		}
-		if(doorLeft)
-		{
-			powerUse += powerConstant * 3;
-		}
-		if(doorRight)
-		{
-			powerUse += powerConstant * 3;
-		}
-		if(lightLeft)
-		{
-			powerUse += powerConstant * 5;
-		}
-		if(lightRight)
-		{
-			powerUse += powerConstant * 5;
-		}
-		if(powerUse % 50 == 0) {
-			score -= 25;
-		}
-		if(powerUse > 500)
-		{
-			power--;
-			powerUse = 0;
-			score -= 10;
-		}
 		// paint component
 		super.paintComponent(g);
 		if (gameState == 0) {
@@ -511,6 +482,41 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		if (gameState == 2){
 			//frame
 				gameTime++;
+				if(map != 0)
+				{
+					powerUse += powerConstant * 2;
+				}
+				if(doorLeft)
+				{
+					powerUse += powerConstant * 3;
+				}
+				if(doorRight)
+				{
+					powerUse += powerConstant * 3;
+				}
+				if(lightLeft)
+				{
+					powerUse += powerConstant * 5;
+				}
+				if(lightRight)
+				{
+					powerUse += powerConstant * 5;
+				}
+				if(powerUse % 50 == 0) {
+					score -= 25;
+				}
+				if(powerUse > 500)
+				{
+					power--;
+					powerUse = 0;
+					score -= 10;
+				}
+				if(power < 0)
+				{
+					winLoss = 0;
+					chowLoss = true;
+					gameState = 3;
+				}
 				if (gameTime > d1Time && gameTime % d1Time == 0) {
 					score+= 500;
 				}
