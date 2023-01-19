@@ -136,7 +136,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		thread.start();
 	}
 	
-	//character move room (unfinished)
+	//character move room 
 	public static int moveRoom(int inRoom) {
 		int temp = inRoom;
 		Random generator = new Random();
@@ -516,6 +516,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 				if (gameTime % 2700 == 0) {
 					hour++;
+				}
+				if(hour == 7)
+				{
+					gameState = 3;
+					winLoss = 1;
 				}
 				if (night == 1)
 				{
