@@ -119,7 +119,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage karelScare;
 	public static BufferedImage batScare;
 	public static int batPos = 1;
-	public static int cHSPos = 11;
+	public static int cHSPos = 12;
 	public static int eChowPos = 1;
 	public static int karelPos = 1;
 	
@@ -517,7 +517,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					powerUse = 0;
 					score -= 10;
 				}
-				if(power < 0)
+				if(power <= 0)
 				{
 					winLoss = 0;
 					chowLoss = true;
