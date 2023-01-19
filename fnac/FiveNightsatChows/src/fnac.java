@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class fnac extends JPanel implements KeyListener, MouseListener, Runnable{
 	//misc 
-	public static int gameSettings;
 	//frame counter
 	public static int frameCounter = 0;
 	public static int minutes;
@@ -110,6 +109,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage loseMenu;
 	public static boolean winOrLoss;
 	
+	//game state 4 (settings) 
+	public static BufferedImage gameSettings;
+
 	// just here so we can determine where to set our buttons
 	public static int mousePosX = 0; 
 	public static int mousePosY = 0;
@@ -225,7 +227,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static void userSaves() throws FileNotFoundException, IOException { 
 		if (gameState == 0) {
 			Scanner fileInput = new Scanner(new File("saves.txt")); 
-			userState = fileInput.nextInt();
+			power = fileInput.nextInt();
 			gameTime = fileInput.nextInt();
 			score = fileInput.nextInt();
 			batPos = fileInput.nextInt();
@@ -235,7 +237,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		}
 		if (gameState == 2) {
 			PrintWriter fileOutput = new PrintWriter(new FileWriter("saves.txt"));
-			fileOutput.printf("%d%f%d%f%d%f%d%f%d%f%d%f%d%f", userState, gameTime, score, batPos, eChowPos, cHSPos, karelPos);
+			fileOutput.printf("%d%f%d%f%d%f%d%f%d%f%d%f%d%f%d%f", power, gameTime, score, batPos, eChowPos, cHSPos, karelPos);
 			fileOutput.close();
 		}
 	}
@@ -508,7 +510,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			g.drawString("game state 3: win/loss screen", 300, 250);
 			g.drawString("press 'e' to go to back to menu/ game state 1", 300, 300);
 		}
-	}
+		if (gameState == 4) {
+			g.drawImage(gameSettings,0,0,null); 
+		}
+ 	}
 	
 	public static void main(String [] args) throws FileNotFoundException{ 
 		try {
@@ -541,6 +546,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			leftDoor = ImageIO.read(new File("doorLeft.png"));
 			backStory = ImageIO.read(new File("backStory.png"));
 			aboutPage = ImageIO.read(new File("howToPlay.png"));
+			cam6[0] = ImageIO.read(new File("cam6.png"));
+			cam6[1] = ImageIO.read(new File("echow6.png"));
+			gameSettings = ImageIO.read(new File("gameSettings.png"));
+			
 
 		}
 		catch (Exception e) {
@@ -624,10 +633,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (gameState == 2) {
-			userState = 1;
 			// resets position
 			if (e.getKeyCode() == 27) {
-				gameSettings = 1;
+				gameState = 4;
 			}
 			purpleX = 1218;
 			purpleY = 460;
@@ -743,11 +751,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		// main game
 		if (gameState == 2) {
-			if (gameSettings == 1) {
-				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
-					gameSettings = 0;
-				}
-			}
 			if (cam == 0 && map == 1) {
 				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
 					map = 0;
@@ -899,6 +902,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					}
 				}
 				
+			} 
+			if (gameState == 4) {
+				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
+					gameState = 2;
+				}
 			}
 		}
 	}
