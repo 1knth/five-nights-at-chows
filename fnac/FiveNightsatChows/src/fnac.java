@@ -16,7 +16,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int gameSettings;
 	//frame counter
 	public static int frameCounter = 0;
-	public static int hour;
+	public static int hour = 0;
 	public static int gameTime;
 	// user saves (not entirely finished)
 	public static int music = 1;
@@ -112,7 +112,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage chowScare;
 	public static BufferedImage karelScare;
 	public static BufferedImage batScare;
-	public static int batPos = 2;
+	public static int batPos = 1;
 	public static int cHSPos = 11;
 	public static int eChowPos = 1;
 	public static int karelPos = 1;
@@ -657,15 +657,15 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					{
 						if(cam == i+1)
 						{
-							if(eChowPos == i)
+							if(eChowPos == i+1)
 							{
 								g.drawImage(cams[i][1],0,0,null);
 							}
-							else if(karelPos == i)
+							else if(karelPos == i+1)
 							{
 								g.drawImage(cams[i][2],0,0,null);
 							}
-							else if(batPos == i)
+							else if(batPos == i+1)
 							{
 								g.drawImage(cams[i][3],0,0,null);
 							}
@@ -699,6 +699,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					karelLoss = false;
 					g.drawImage(karelScare,0,0,null);
 				}
+				try {
+					TimeUnit.SECONDS.sleep(2);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 			{
@@ -706,11 +711,6 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				{
 					maxNight = night+1;	
 				}
-			}
-			try {
-				TimeUnit.SECONDS.sleep(2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 			g.drawString("game state 3: win/loss screen", 300, 250);
 			g.drawString("press 'e' to go to back to menu/ game state 1", 300, 300);
