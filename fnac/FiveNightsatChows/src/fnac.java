@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class fnac extends JPanel implements KeyListener, MouseListener, Runnable{
 	//misc 
+
 	//frame counter
 	public static int frameCounter = 0;
 	public static int minutes;
@@ -31,6 +32,8 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static int settings = 0;
 	public static int about = 0;
 	public static int instructions = 0;
+	public static int savesMenu = 0;
+	public static BufferedImage playSaves;
 	public static BufferedImage aboutPage;
 	public static BufferedImage backStory;
 	public static BufferedImage titleScreen;
@@ -43,7 +46,9 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	//game state 1
 	public static BufferedImage[] purpleSprite = new BufferedImage[9];
 	public static BufferedImage bg;
-	public static BufferedImage savesMenu;
+	public static BufferedImage contract;
+	public static BufferedImage signedContract;
+	public static int sign = 0;
 	public static int purpleState = 4;
 	public static int purpleX = 1218;
 	public static int purpleY = 460;
@@ -99,10 +104,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static BufferedImage codeHS;
 	public static BufferedImage karel;
 	public static BufferedImage codingBat;
+	public static BufferedImage batLightLeft;
+	public static BufferedImage batLightRight;
+	public static BufferedImage echowLightLeft;
+	public static BufferedImage echowLightRight;
+	public static BufferedImage karelLightLeft;
+	public static BufferedImage karelLightRight;
 	public static int batPos = 2;
 	public static int cHSPos = 12;
 	public static int eChowPos = 1;
 	public static int karelPos = 1;
+	
 	
 	//game state 3 (unfinished)
 	public static BufferedImage winMenu;
@@ -225,19 +237,52 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	
 	//user saves method (unfinished)
 	public static void userSaves() throws FileNotFoundException, IOException { 
-		if (gameState == 0) {
-			Scanner fileInput = new Scanner(new File("saves.txt")); 
-			power = fileInput.nextInt();
-			gameTime = fileInput.nextInt();
-			score = fileInput.nextInt();
-			batPos = fileInput.nextInt();
-			eChowPos = fileInput.nextInt();
-			cHSPos = fileInput.nextInt();
-			karelPos = fileInput.nextInt();
+		try {
+			if (gameState == 0) {
+				Scanner fileInput = new Scanner(new File("saves.txt")); 
+				power = fileInput.nextInt();
+				gameTime = fileInput.nextInt();
+				score = fileInput.nextInt();
+				batPos = fileInput.nextInt();
+				eChowPos = fileInput.nextInt();
+				cHSPos = fileInput.nextInt();
+				karelPos = fileInput.nextInt();
+				gameState = fileInput.nextInt();
+				System.out.println(power);
+				System.out.println(gameTime);
+				System.out.println(batPos);
+				System.out.println(eChowPos);
+				System.out.println(cHSPos);
+				System.out.println(karelPos);
+				System.out.println(gameState);
+				if (gameState == 4) {
+					gameState = 2;
+				}
+				fileInput.close();
+			}
 		}
-		if (gameState == 2) {
+		catch (FileNotFoundException e) {
+			if (e instanceof FileNotFoundException) {
+				power = 100;
+				gameTime = 0;
+				score = 0;
+				batPos = 2;
+				eChowPos = 1;
+				cHSPos = 12;
+				karelPos = 1;
+				gameState = 1;
+			}
+		}
+		if (gameState == 4) {
 			PrintWriter fileOutput = new PrintWriter(new FileWriter("saves.txt"));
-			fileOutput.printf("%d%f%d%f%d%f%d%f%d%f%d%f%d%f%d%f", power, gameTime, score, batPos, eChowPos, cHSPos, karelPos);
+			fileOutput.println(power);
+			fileOutput.println(gameTime);
+			fileOutput.println(score);
+			fileOutput.println(batPos);
+			fileOutput.println(eChowPos);
+			fileOutput.println(cHSPos);
+			fileOutput.println(karelPos);
+			fileOutput.println(gameState);
 			fileOutput.close();
 		}
 	}
@@ -365,6 +410,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	}
 	
 	public void paintComponent(Graphics g) {
+		String powerAcc =  "" + power;
 		if(map != 0)
 		{
 			powerUse++;
@@ -397,10 +443,13 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		// paint component
 		super.paintComponent(g);
 		if (gameState == 0) {
-			if (settings == 1) {
+			if (savesMenu == 1) {
+				g.drawImage(playSaves,0,0,null);
+			}
+			else if (settings == 1) {
 				g.drawImage(displaySettings(),0,0,null);
 			}
-			if (settings == 0){
+			else if (settings == 0){
 				g.drawImage(titleScreen,0,0,null);
 				if (gameTime >= 450 && gameTime <= 490) {
 					g.drawImage(titleScreen2,0,0,null);
@@ -421,29 +470,38 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			g.drawImage(bg,0,0,null);
 			g.drawImage(purpleSprite[purpleState], purpleX, purpleY, null);
 			if (cutscene == 1) {
-				g.setColor(new Color(255,0,0));
-				g.drawString("press 'e' to go to the next game state",300,300);
+				g.drawImage(contract,0,0,null);
+				if (sign == 1) {
+					g.drawImage(signedContract,0,0,null);
+				}
 			}
 		}
 		if (gameState == 2){
+			savesMenu = 0;
+			sign = 0;
+			cutscene = 0;
+			g.drawImage(office,0,0,null);
+			g.setFont(new Font("TimesRoman", Font.BOLD, 35));
+			g.setColor(new Color(255,255,255));
+			g.drawString("Power: ",153,78);
+			g.drawString(powerAcc,280,78);
 			//frame
-				gameTime++;
-				if (gameTime > d1Time && gameTime % d1Time == 0) {
-					score+= 500;
-				}
-				if (difficulty == 1 && gameTime % d1Time == 0) {
-					karelPos = moveRoom(karelPos);
-					eChowPos = moveRoom(eChowPos);
-					batPos = moveRoom(batPos);
-					System.out.printf("%5d%5d%5d%f", karelPos,batPos,eChowPos);
-				}
-				if (difficulty == 2 && gameTime % 1350 == 0) {
-					//
-				}
-			
+			gameTime++;
+			if (gameTime > d1Time && gameTime % d1Time == 0) {
+				score+= 500;
+			}
+			if (difficulty == 1 && gameTime % d1Time == 0) {
+				karelPos = moveRoom(karelPos);
+				eChowPos = moveRoom(eChowPos);
+				batPos = moveRoom(batPos);
+				System.out.printf("%5d%5d%5d%n", eChowPos,karelPos,batPos);
+			}
+			if (difficulty == 2 && gameTime % 1350 == 0) {
+				//
+			}
+		
 			// draw office
 			if (map == 0) {
-				g.drawImage(office,0,0,null);
 				if(doorLeft)
 				{
 					g.drawImage(leftDoor,0,0,null);
@@ -506,9 +564,17 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 			}
 		}
+		String strScore = "" + score;
 		if (gameState == 3) {
-			g.drawString("game state 3: win/loss screen", 300, 250);
-			g.drawString("press 'e' to go to back to menu/ game state 1", 300, 300);
+			if (winOrLoss == true) {
+				g.drawImage(winMenu,0,0,null);
+			}
+			else {
+				g.drawImage(loseMenu,0,0,null);
+			}
+			g.setFont(new Font("TimesRoman", Font.BOLD, 30));
+			g.setColor(new Color(255,255,255));
+			g.drawString(strScore,850,483);
 		}
 		if (gameState == 4) {
 			g.drawImage(gameSettings,0,0,null); 
@@ -518,6 +584,7 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 	public static void main(String [] args) throws FileNotFoundException{ 
 		try {
 			titleScreen = ImageIO.read(new File("titleScreen.png"));
+			playSaves = ImageIO.read(new File ("saveMenu.png"));
 			titleScreen2 = ImageIO.read(new File("titleScreen2.png"));
 			settingsM1D1 = ImageIO.read(new File("settingsM1D1.png"));
 			settingsM1D2 = ImageIO.read(new File("settingsM1D2.png"));
@@ -544,23 +611,77 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			leftDoor = ImageIO.read(new File("doorLeft.png"));
 			backStory = ImageIO.read(new File("backStory.png"));
 			aboutPage = ImageIO.read(new File("howToPlay.png"));
+			
 			cam1a[0] = ImageIO.read(new File("cam1a.png"));
-			cam1b[1] = ImageIO.read(new File("echow1a"));
+			cam1a[1] = ImageIO.read(new File("echow1a.png"));
+			cam1a[2] = ImageIO.read(new File("karel1a.png"));
+			cam1a[3] = ImageIO.read(new File("bat1a.png"));
+ 
 			cam1b[0] = ImageIO.read(new File("cam1b.png"));
 			cam1b[1] = ImageIO.read(new File("echow1b.png"));
+			cam1b[2] = ImageIO.read(new File("karel1b.png"));
+			cam1b[3] = ImageIO.read(new File("bat1b.png"));
+
+
 			cam2[0] = ImageIO.read(new File("cam2.png"));
 			cam2[1] = ImageIO.read(new File("echow2.png"));
+			cam2[2] = ImageIO.read(new File("karel2.png"));
+			cam2[3] = ImageIO.read(new File("bat2.png"));
+
 			cam3[0] = ImageIO.read(new File("cam3.png"));
 			cam3[1] = ImageIO.read(new File("echow3.png"));
+			cam3[2] = ImageIO.read(new File("karel3.png"));
+			cam3[3] = ImageIO.read(new File("bat3.png"));
+
+			cam4[0] = ImageIO.read(new File("cam4.png"));
+			cam4[1] = ImageIO.read(new File("echow4.png"));
+			cam4[2] = ImageIO.read(new File("karel4.png"));
+			cam4[3] = ImageIO.read(new File("bat4.png"));
+
+			cam5[0] = ImageIO.read(new File("cam5.png"));
+			cam5[1] = ImageIO.read(new File("echow5.png"));
+			cam5[2] = ImageIO.read(new File("karel5.png"));
+			cam5[3] = ImageIO.read(new File("bat5.png"));
+
+			cam6[0] = ImageIO.read(new File("cam6.png"));
+			cam6[1] = ImageIO.read(new File("echow6.png"));
+			cam6[2] = ImageIO.read(new File("karel6.png"));
+			cam6[3] = ImageIO.read(new File("bat6.png"));
+
 			cam7a[0] = ImageIO.read(new File("cam7a.png"));
 			cam7b[0] = ImageIO.read(new File("cam7b.png"));
 			cam7b[1] = ImageIO.read(new File("echow7b.png"));
 			cam7a[1] = ImageIO.read(new File("echow7a.png"));
-			cam6[0] = ImageIO.read(new File("cam6.png"));
-			cam6[1] = ImageIO.read(new File("echow6.png"));
-			cam9 = ImageIO.read(new File("audioroom.png"));
-			gameSettings = ImageIO.read(new File("gameSettings.png"));
+			cam7a[2] = ImageIO.read(new File("karel7a.png"));
+			cam7b[2] = ImageIO.read(new File("karel7b.png"));
+			cam7a[3] = ImageIO.read(new File("bat7a.png"));
+			cam7b[3] = ImageIO.read(new File("bat7b.png"));
 			
+			cam8a[0] = ImageIO.read(new File("cam8a.png"));
+			cam8b[0] = ImageIO.read(new File("cam8b.png"));
+			cam8b[1] = ImageIO.read(new File("echow8b.png"));
+			cam8a[1] = ImageIO.read(new File("echow8a.png"));
+			cam8a[2] = ImageIO.read(new File("karel8a.png"));
+			cam8b[2] = ImageIO.read(new File("karel8b.png"));
+			cam8a[3] = ImageIO.read(new File("bat8a.png"));
+			cam8b[3] = ImageIO.read(new File("bat8b.png"));
+
+			cam9 = ImageIO.read(new File("audioRoom.png"));
+			gameSettings = ImageIO.read(new File("gameSettings.png"));
+
+			winMenu = ImageIO.read(new File("winScreen.png"));
+			loseMenu = ImageIO.read(new File("loseScreen.png"));
+			contract = ImageIO.read(new File("contract.png"));
+			signedContract = ImageIO.read(new File("sign.png"));
+
+			batLightLeft = ImageIO.read(new File("batLight.png"));
+			batLightRight = ImageIO.read(new File("batLightRight.png"));
+			echowLightRight = ImageIO.read(new File("echowLightRight.png"));
+			echowLightLeft = ImageIO.read(new File("echowLightleft.png"));
+			karelLightLeft = ImageIO.read(new File("karelLightLeft.png"));
+			karelLightRight = ImageIO.read(new File("karelLightRight.png"));
+
+		
 
 		}
 		catch (Exception e) {
@@ -622,9 +743,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				right = false;
 				purpleState = 8;
 				cutscene = 1;
-				if (e.getKeyChar() == 'e') {
-					gameState = 2;
-				}
+			if (purpleX > 1400) {
+				purpleX = 1400;
+				purpleState = 8;
+			}
 			}else{
 				if (e.getKeyChar() == 'a')
 				{
@@ -644,10 +766,15 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 			}
 		}
 		if (gameState == 2) {
-			// resets position
+			// settings menu
 			if (e.getKeyCode() == 27) {
 				gameState = 4;
+				if (mousePosX > 126 && mousePosY > 436 && mousePosX < 299 && mousePosY < 495) {
+					gameState = 2;
+				}
+				//save game
 			}
+			// resets position
 			purpleX = 1218;
 			purpleY = 460;
 			if (map == 0 && cam == 0) {
@@ -661,11 +788,11 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 			}
 		}
-		if (gameState == 3) {
-			if (e.getKeyChar() == 'e') {
-				gameState = 0;
-			}
-		}
+		// if (gameState == 4) {
+		// 	if (e.getKeyCode() == 27) {
+		// 		gameState = 2;	
+		// 	}
+		// }
 	}
 	public void keyReleased(KeyEvent e)
 	{
@@ -675,6 +802,14 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				left = false;
 			}				
 			if (e.getKeyChar() == 'd')
+			{
+				right = false;
+			}
+			if (e.getKeyChar() == 'A')
+			{
+				left = false;
+			}				
+			if (e.getKeyChar() == 'D')
 			{
 				right = false;
 			}
@@ -694,10 +829,10 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 		
 		if (gameState == 0){
 			if (settings == 0 && about == 0 && instructions == 0){
-				// enter game 
+				// enter save screen 
 				if (mousePosX > 126 && mousePosY > 436 && mousePosX < 299 && mousePosY < 495){
-					gameState = 1;
-					song.stop();
+					savesMenu = 1;
+					System.out.println("play button work");
 				}
 				//about page
 				if (mousePosX > 133 && mousePosY > 616 && mousePosX < 345 && mousePosY < 669){
@@ -758,9 +893,65 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 					instructions = 0;
 				}
 			}
+			if (savesMenu == 1) {
+				//back button
+				if (mousePosX > 462 && mousePosY > 272 && mousePosX < 562 && mousePosY < 680){
+					savesMenu = 0;
+				}
+				if (mousePosX > 686 && mousePosY > 389 && mousePosX < 1080 && mousePosY < 463){
+					System.out.println("1");
+					try {
+						userSaves();
+					} catch (FileNotFoundException e1) {
+
+					} catch (IOException e1) {
+
+					}
+					if (gameState == 0) {
+						gameState = 1;
+						song.stop();
+					}
+					else {
+						song.stop();
+					}
+				}
+				if (mousePosX > 686 && mousePosY > 494 && mousePosX < 1081 && mousePosY < 560){
+					power = 100;
+					cHSPos = 12;
+					eChowPos = 1;
+					karelPos = 1;
+					batPos = 2;
+					gameTime = 0;
+					gameState = 1;
+					song.stop();
+				}
+			}
+			/*
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 */
+		}
+		if (gameState == 1) {
+			if (sign == 1) {
+				if (mousePosX > 1075 && mousePosY > 649 && mousePosX < 1243 && mousePosY < 697) {
+					gameState = 2;
+				}
+			}
+			if (mousePosX > 672 && mousePosY > 609 && mousePosX < 839 && mousePosY < 646) {
+				sign = 1;
+			}
 		}
 		
 		// main game
+		
 		if (gameState == 2) {
 			if (cam == 0 && map == 1) {
 				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
@@ -914,9 +1105,52 @@ public class fnac extends JPanel implements KeyListener, MouseListener, Runnable
 				}
 				
 			} 
-			if (gameState == 4) {
-				if (mousePosX > 44 && mousePosY > 49 && mousePosX < 107 && mousePosY < 113) {
+		}
+		else if (gameState == 3) {
+			if (winOrLoss == false) {
+				if (mousePosX > 1082 && mousePosY > 666 && mousePosX < 1209 && mousePosY < 780) {
 					gameState = 2;
+				}
+				if (mousePosX > 502 && mousePosY > 667 && mousePosX < 620 && mousePosY < 778) {
+					gameState = 0;
+				}
+			}
+			else {
+				if (mousePosX > 1082 && mousePosY > 666 && mousePosX < 1209 && mousePosY < 780) {
+					gameState = 2;
+				}
+				if (mousePosX > 502 && mousePosY > 667 && mousePosX < 620 && mousePosY < 778) {
+					gameState = 2;
+				}
+				if (mousePosX > 944 && mousePosY > 674 && mousePosX < 1062 && mousePosY < 782) {
+					// maxNight -= 1;
+					gameState = 2;
+				}
+				
+			}
+		}
+		else if (gameState == 4) {
+			if (gameState == 4) {
+				if (mousePosX > 465 && mousePosY > 316 && mousePosX < 567 && mousePosY < 639) {
+					gameState = 2;
+				}
+				if (mousePosX > 701 && mousePosY > 437 && mousePosX < 1101 && mousePosY < 514) {
+					try {
+						userSaves();
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					System.out.println(power);
+					System.out.println(gameTime);
+					System.out.println(batPos);
+					System.out.println(eChowPos);
+					System.out.println(cHSPos);
+					System.out.println(karelPos);
+					System.out.println(gameState);
 				}
 			}
 		}
